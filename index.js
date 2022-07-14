@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const isUrl = require ('is-url');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -25,10 +26,16 @@ app.get('/api/hello', function(req, res) {
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.post('/api/shorturl', function(req, res) {
-  counter += 1;
   const original_url = req.body.url;
+  console.log(original_url, isUrl(original_url));
+  if (!isUrl(original_url)){
+    res.send({error: 'invalid url'});
+    return;
+  }else{  
+  counter += 1;
   shortendUrls[counter] = original_url;
   res.json({ original_url: original_url, short_url: counter });
+  };
   console.log(original_url);
   console.log(shortendUrls);
 });
